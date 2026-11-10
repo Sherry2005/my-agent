@@ -246,8 +246,8 @@ def run_agent(user_message, groq_api_key, weather_key, history):
 
     for _ in range(10):
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            max_tokens=1024,
+            model=MODEL,
+            max_tokens=2048,
             tools=TOOLS,
             messages=messages,
         )
@@ -277,6 +277,7 @@ if "history" not in st.session_state:
 if "demo_used" not in st.session_state:
     st.session_state.demo_used = 0
 
+MODEL = get_secret("GROQ_MODEL") or "openai/gpt-oss-120b"
 server_groq = get_secret("GROQ_API_KEY")
 server_weather = get_secret("OPENWEATHER_API_KEY")
 
@@ -334,7 +335,7 @@ def handle(text):
 
 # ── Header ─────────────────────────────────────────────────────────────────────
 st.markdown('<div class="agent-title">⚡ AI Agent</div>', unsafe_allow_html=True)
-st.markdown('<div class="agent-sub">Powered by Groq · LLaMA 3.3 70B · Tool Use</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="agent-sub">Powered by Groq · {esc(MODEL)} · Tool Use</div>', unsafe_allow_html=True)
 st.markdown("---")
 
 # ── Run a clicked example, if any ──────────────────────────────────────────────
