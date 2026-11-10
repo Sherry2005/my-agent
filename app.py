@@ -3,6 +3,7 @@ import html
 import json
 import operator
 import os
+import re
 from datetime import date
 
 import requests
@@ -118,6 +119,11 @@ def get_secret(name):
 def esc(text):
     """Escape user/model text before putting it in HTML."""
     return html.escape(str(text)).replace("\n", "<br>")
+
+
+def esc_md(text):
+    """Escape first, then turn **bold** into <strong> (safe: input is already escaped)."""
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", esc(text))
 
 
 @st.cache_resource
@@ -353,7 +359,7 @@ for entry in st.session_state.history:
             f'<br>↳ {esc(tool_result)}</div>',
             unsafe_allow_html=True,
         )
-    st.markdown(f'<div class="msg-label agent">Agent</div><div class="msg-agent">{esc(entry["agent"])}</div>',
+    st.markdown(f'<div class="msg-label agent">Agent</div><div class="msg-agent">{esc_md(entry["agent"])}</div>',
                 unsafe_allow_html=True)
 
 # ── Example prompts (first screen only) ────────────────────────────────────────
